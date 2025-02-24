@@ -31,7 +31,7 @@ function ChatMessages(props: {
   className?: string;
 }) {
   return (
-    <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
+    <div className="flex flex-col max-w-[1024px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
         if (m.role === "system") {
           return <IntermediateStep key={m.id} message={m} />;
@@ -85,7 +85,7 @@ function ChatInput(props: {
       }}
       className={cn("flex w-full flex-col", props.className)}
     >
-      <div className="border border-input bg-secondary rounded-lg flex flex-col gap-2 max-w-[768px] w-full mx-auto">
+      <div className="border border-input bg-secondary rounded-lg flex flex-col gap-2 max-w-[1024px] w-full mx-auto">
         <input
           value={props.value}
           placeholder={props.placeholder}
