@@ -3,8 +3,7 @@ import type { Message } from "ai/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { CodeBlock } from "@/components/ui/extended/code-block";
 
 export function ChatMessageBubble(props: {
   message: Message;
@@ -59,23 +58,8 @@ export function ChatMessageBubble(props: {
                 {children}
               </a>
             ),
-            code({ node, inline, className, children, ...props }: any) {
-              const match = /language-(\w+)/.exec(className || "");
-
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  style={dracula}
-                  PreTag="div"
-                  language={match[1]}
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
+            code({ className, children }: any) {
+              return <CodeBlock code={String(children).replace(/\n$/, "")} />;
             },
             blockquote: ({ children }) => (
               <blockquote className="border-l-4 border-gray-400 pl-4 italic">
