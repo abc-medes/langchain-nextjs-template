@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { CodeBlock } from "@/components/ui/extended/code-block";
+import { ClickableListItem } from "@/components/ui/extended/clickable-list-item";
 
 export function ChatMessageBubble(props: {
   message: Message;
@@ -47,7 +48,9 @@ export function ChatMessageBubble(props: {
             ol: ({ children }) => (
               <ol className="list-decimal pl-5">{children}</ol>
             ),
-            li: ({ children }) => <li className="mb-1">{children}</li>,
+            li: ({ children }) => (
+              <ClickableListItem>{children}</ClickableListItem>
+            ),
             a: ({ href, children }) => (
               <a
                 href={href!}
