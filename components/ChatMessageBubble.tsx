@@ -1,5 +1,11 @@
 import { cn } from "@/utils/cn";
 import type { Message } from "ai/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 export function ChatMessageBubble(props: {
   message: Message;
@@ -9,7 +15,7 @@ export function ChatMessageBubble(props: {
   return (
     <div
       className={cn(
-        `rounded-[24px] max-w-[80%] mb-8 flex`,
+        "rounded-[24px] max-w-[80%] mb-8 flex",
         props.message.role === "user"
           ? "bg-secondary text-secondary-foreground px-4 py-2"
           : null,
@@ -23,14 +29,90 @@ export function ChatMessageBubble(props: {
       )}
 
       <div className="whitespace-pre-wrap flex flex-col">
-        <span>{props.message.content}</span>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          components={{
+            h1: ({ children }) => (
+              <h1 className="text-2xl font-bold">{children}</h1>
+            ),
+            h2: ({ children }) => (
+              <h2 className="text-xl font-semibold">{children}</h2>
+            ),
+            h3: ({ children }) => (
+              <h3 className="text-lg font-medium">{children}</h3>
+            ),
+            p: ({ children }) => <p className="my-2">{children}</p>,
+            ul: ({ children }) => (
+              <ul className="list-disc pl-5">{children}</ul>
+            ),
+            ol: ({ children }) => (
+              <ol className="list-decimal pl-5">{children}</ol>
+            ),
+            li: ({ children }) => <li className="mb-1">{children}</li>,
+            a: ({ href, children }) => (
+              <a
+                href={href!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                {children}
+              </a>
+            ),
+            code({ node, inline, className, children, ...props }: any) {
+              const match = /language-(\w+)/.exec(className || "");
+
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  style={dracula}
+                  PreTag="div"
+                  language={match[1]}
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+            blockquote: ({ children }) => (
+              <blockquote className="border-l-4 border-gray-400 pl-4 italic">
+                {children}
+              </blockquote>
+            ),
+            table: ({ children }) => (
+              <table className="border-collapse border border-gray-400 w-full">
+                {children}
+              </table>
+            ),
+            thead: ({ children }) => (
+              <thead className="bg-gray-200 dark:bg-gray-700">{children}</thead>
+            ),
+            tr: ({ children }) => (
+              <tr className="border border-gray-300">{children}</tr>
+            ),
+            th: ({ children }) => (
+              <th className="border border-gray-300 px-2 py-1 text-left">
+                {children}
+              </th>
+            ),
+            td: ({ children }) => (
+              <td className="border border-gray-300 px-2 py-1">{children}</td>
+            ),
+          }}
+        >
+          {props.message.content}
+        </ReactMarkdown>
 
         {props.sources && props.sources.length ? (
           <>
-            <code className="mt-4 mr-auto bg-primary px-2 py-1 rounded">
+            <div className="mt-4 mr-auto bg-primary px-2 py-1 rounded">
               <h2>🔍 Sources:</h2>
-            </code>
-            <code className="mt-1 mr-2 bg-primary px-2 py-1 rounded text-xs">
+            </div>
+            <div className="mt-1 mr-2 bg-primary px-2 py-1 rounded text-xs">
               {props.sources?.map((source, i) => (
                 <div className="mt-2" key={"source:" + i}>
                   {i + 1}. &quot;{source.pageContent}&quot;
@@ -40,12 +122,10 @@ export function ChatMessageBubble(props: {
                       Lines {source.metadata?.loc?.lines?.from} to{" "}
                       {source.metadata?.loc?.lines?.to}
                     </div>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </div>
               ))}
-            </code>
+            </div>
           </>
         ) : null}
       </div>
