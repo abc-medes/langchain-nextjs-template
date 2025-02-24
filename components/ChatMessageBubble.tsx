@@ -5,12 +5,17 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { CodeBlock } from "@/components/ui/extended/code-block";
 import { ClickableListItem } from "@/components/ui/extended/clickable-list-item";
+import { ChatThread } from "@/components/ChatThread";
+import { useState } from "react";
+import { ThreadModal } from "@/components/ThreadModal";
 
 export function ChatMessageBubble(props: {
   message: Message;
   aiEmoji?: string;
   sources: any[];
 }) {
+  const [threadMessage, setThreadMessage] = useState<string | null>(null);
+
   return (
     <div
       className={cn(
@@ -49,7 +54,11 @@ export function ChatMessageBubble(props: {
               <ol className="list-decimal pl-5">{children}</ol>
             ),
             li: ({ children }) => (
-              <ClickableListItem>{children}</ClickableListItem>
+              <ClickableListItem
+                onClick={() => setThreadMessage(children as string)}
+              >
+                {children}
+              </ClickableListItem>
             ),
             a: ({ href, children }) => (
               <a
@@ -92,6 +101,11 @@ export function ChatMessageBubble(props: {
         >
           {props.message.content}
         </ReactMarkdown>
+
+        <ThreadModal
+          threadMessage={threadMessage}
+          onClose={() => setThreadMessage(null)}
+        />
 
         {props.sources && props.sources.length ? (
           <>
