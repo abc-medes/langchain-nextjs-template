@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatThread } from "@/components/ChatThread";
 import { cn } from "@/utils/cn";
 
@@ -11,6 +11,16 @@ export function ThreadModal({
   threadMessage: string | null;
   onClose: () => void;
 }) {
+  const [threadedResponse, setThreadedResponse] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (threadMessage) {
+      setThreadedResponse(
+        `AI Response: Here’s an answer related to "${threadMessage}".`,
+      );
+    }
+  }, [threadMessage]);
+
   return (
     <div
       className={cn(
@@ -29,9 +39,21 @@ export function ThreadModal({
         </button>
       </div>
 
-      {/* Chat Thread Content - Scrollable */}
+      {/* Chat Thread Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {threadMessage && <ChatThread originalQuestion={threadMessage} />}
+        {threadMessage && (
+          <>
+            <div className="text-lg font-semibold text-white mb-2">
+              Threaded Question: {threadMessage}
+            </div>
+            <ChatThread originalQuestion={threadMessage} />
+            {threadedResponse && (
+              <div className="mt-4 p-3 bg-gray-800 rounded-md border border-gray-700 text-white">
+                {threadedResponse}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

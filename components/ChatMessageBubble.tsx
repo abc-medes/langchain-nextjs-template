@@ -15,6 +15,8 @@ export function ChatMessageBubble(props: {
   sources: any[];
 }) {
   const [threadMessage, setThreadMessage] = useState<string | null>(null);
+  const [threadCount, setThreadCount] = useState(0);
+  const maxThreads = 3;
 
   return (
     <div
@@ -104,7 +106,10 @@ export function ChatMessageBubble(props: {
 
         <ThreadModal
           threadMessage={threadMessage}
-          onClose={() => setThreadMessage(null)}
+          onClose={() => {
+            setThreadMessage(null);
+            setThreadCount((prev) => Math.max(prev - 1, 0));
+          }}
         />
 
         {props.sources && props.sources.length ? (
