@@ -9,15 +9,18 @@ import { ChatThread } from "@/components/ChatThread";
 import { useState } from "react";
 import { ThreadModal } from "@/components/ThreadModal";
 
+function cleanText(text: string): string {
+  return text;
+  // .replace(/\n{3,}/g, "\n\n")
+  // .replace(/\s{2,}/g, " ")
+  // .trim();
+}
+
 export function ChatMessageBubble(props: {
   message: Message;
   aiEmoji?: string;
   sources: any[];
 }) {
-  const [threadMessage, setThreadMessage] = useState<string | null>(null);
-  const [threadCount, setThreadCount] = useState(0);
-  const maxThreads = 3;
-
   return (
     <div
       className={cn(
@@ -56,10 +59,10 @@ export function ChatMessageBubble(props: {
               <ol className="list-decimal pl-5">{children}</ol>
             ),
             li: ({ children }) => (
-              <ClickableListItem
-                onClick={() => setThreadMessage(children as string)}
-              >
-                {children}
+              <ClickableListItem onClick={() => {}}>
+                {typeof children === "string"
+                  ? children.replace(/\n{3,}/g, "\n\n").trim()
+                  : children}
               </ClickableListItem>
             ),
             a: ({ href, children }) => (
@@ -101,16 +104,8 @@ export function ChatMessageBubble(props: {
             ),
           }}
         >
-          {props.message.content}
+          {cleanText(props.message.content)}
         </ReactMarkdown>
-
-        <ThreadModal
-          threadMessage={threadMessage}
-          onClose={() => {
-            setThreadMessage(null);
-            setThreadCount((prev) => Math.max(prev - 1, 0));
-          }}
-        />
 
         {props.sources && props.sources.length ? (
           <>

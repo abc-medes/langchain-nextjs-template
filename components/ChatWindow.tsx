@@ -22,8 +22,9 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { cn } from "@/utils/cn";
+import { ThreadModal } from "./ThreadModal";
 
-function ChatMessages(props: {
+export function ChatMessages(props: {
   messages: Message[];
   emptyStateComponent: ReactNode;
   sourcesForMessages: Record<string, any>;

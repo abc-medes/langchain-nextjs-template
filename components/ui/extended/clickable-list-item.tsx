@@ -13,12 +13,14 @@ const ClickableListItem: React.FC<ClickableListItemProps> = ({
   return (
     <li
       className={cn(
-        "mb-1 cursor-pointer bg-gray-100 dark:bg-gray-800 rounded-md p-1 transition-colors",
+        "cursor-pointer bg-gray-100 dark:bg-gray-800 rounded-md transition-colors",
         "hover:bg-gray-300 dark:hover:bg-gray-600",
       )}
       onClick={() => onClick && onClick()}
     >
-      {children}
+      {typeof children === "string"
+        ? children.replace(/\n{3,}/g, "\n\n").trim()
+        : children}
     </li>
   );
 };
