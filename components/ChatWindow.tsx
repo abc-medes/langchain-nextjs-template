@@ -33,9 +33,10 @@ function ChatMessages(props: {
   return (
     <div className="flex flex-col max-w-[1024px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
-        if (m.role === "system") {
-          return <IntermediateStep key={m.id} message={m} />;
-        }
+        // TODO : this is for debugging. To represent intermediate steps.
+        // if (m.role === "system") {
+        //   return <IntermediateStep key={m.id} message={m} />;
+        // }
 
         const sourceKey = (props.messages.length - 1 - i).toString();
         return (
