@@ -127,3 +127,11 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 Thanks for reading! If you have any questions or comments, reach out to us on Twitter
 [@LangChainAI](https://twitter.com/langchainai), or [click here to join our Discord server](https://discord.gg/langchain).
+
+## TODO
+
+- 쓰레드 모달 예쁘게 만들기
+- 자동으로 물음 받을 수 있게하기
+- 딥시크, 클로드 AI 끌어다 프리티어까지 쓰게하기
+- Streaming 만들기
+- 입력창 chatgpt 처럼 만들기

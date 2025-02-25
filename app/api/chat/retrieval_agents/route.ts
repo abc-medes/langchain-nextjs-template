@@ -61,19 +61,6 @@ If the conversation becomes argumentative, **stop responding and end the convers
 All responses **must be structured in this format**:
 
 #### **Example Multi-Question Answer Format**
----
-**Question from user:**
-1. {first_question}
-2. {second_question}
-3. {third_question}
----
-
-If the user provides a single question, format it as:
-
----
-**Question from user:**
-1. {single_question}
----
 
 If the user asks for **technical** information:
 - **Think step-by-step first**, describe your approach in **pseudocode**.
@@ -162,6 +149,7 @@ export async function POST(req: NextRequest) {
     const chatModel = new ChatOpenAI({
       model: "gpt-4o-mini",
       temperature: 0.2,
+      streaming: true,
     });
 
     const client = createClient(

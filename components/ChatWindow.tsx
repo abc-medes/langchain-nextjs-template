@@ -2,7 +2,7 @@
 
 import { type Message } from "ai";
 import { useChat } from "ai/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { toast } from "sonner";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
@@ -70,12 +70,20 @@ function ScrollToBottom(props: { className?: string }) {
 function ChatInput(props: {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   loading?: boolean;
   placeholder?: string;
   children?: ReactNode;
   className?: string;
 }) {
+  const [rows, setRows] = useState(1);
+  const maxRows = 3;
+
+  useEffect(() => {
+    const lineCount = props.value.split("\n").length;
+    setRows(Math.min(maxRows, Math.max(1, lineCount)));
+  }, [props.value]);
+
   return (
     <form
       onSubmit={(e) => {
@@ -86,11 +94,12 @@ function ChatInput(props: {
       className={cn("flex w-full flex-col", props.className)}
     >
       <div className="border border-input bg-secondary rounded-lg flex flex-col gap-2 max-w-[1024px] w-full mx-auto">
-        <input
+        <textarea
           value={props.value}
           placeholder={props.placeholder}
           onChange={props.onChange}
-          className="border-none outline-none bg-transparent p-4"
+          className="border-none outline-none bg-transparent p-4 resize-none overflow-hidden"
+          rows={rows}
         />
 
         <div className="flex justify-between ml-4 mr-2 mb-2">
