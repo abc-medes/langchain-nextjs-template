@@ -160,8 +160,6 @@ export function ChatWindow(props: {
   showIngestForm?: boolean;
   showIntermediateStepsToggle?: boolean;
 }) {
-  const modalRef = useRef(null);
-
   const selectedThread = useThreadStore(
     (state) => state.threads["example-thread-id"],
   );
@@ -302,6 +300,16 @@ export function ChatWindow(props: {
             </div>
           ) : (
             <div>
+              <ChatThread
+                selectedThread={selectedThread}
+                clearThread={() => {}}
+                props={{
+                  messages: chat.messages,
+                  sourcesForMessages: sourcesForMessages,
+                  aiEmoji: props.emoji,
+                  // className: props.className,
+                }}
+              />
               <ChatMessages
                 aiEmoji={props.emoji}
                 messages={chat.messages}

@@ -40,7 +40,7 @@ export function ChatThread({
   clearThread,
   props,
 }: {
-  selectedThread: Record<string, Thread>;
+  selectedThread: Thread;
   clearThread: () => void;
   props: {
     messages: Message[];
@@ -75,18 +75,19 @@ export function ChatThread({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-end bg-gray-800/20 ${
+      className={`fixed inset-0 flex items-center justify-end  ${
         selectedThread
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
-      } transition-opacity`}
+      } transition-opacity border-1px-solid`}
       onClick={handleClickOutside}
     >
       <div
         ref={modalRef}
-        className={`h-full shadow-lg w-3/5 transition-transform duration-300 ${
+        className={`h-full shadow-lg w-3/5 transition-transform duration-300 bg-gray-800 bg-opacity-95 transition-opacity ${
           selectedThread ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ border: "5px solid red" }}
         onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
       >
         <ChatMessages
