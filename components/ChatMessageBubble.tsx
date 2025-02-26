@@ -5,15 +5,33 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { CodeBlock } from "@/components/ui/extended/code-block";
 import { ClickableListItem } from "@/components/ui/extended/clickable-list-item";
-import { ChatThread } from "@/components/ChatThread";
-import { useState } from "react";
-import { ThreadModal } from "@/components/ThreadModal";
+import useThreadStore from "@/store/useThreadsStore";
 
 function cleanText(text: string): string {
   return text;
   // .replace(/\n{3,}/g, "\n\n")
   // .replace(/\s{2,}/g, " ")
   // .trim();
+}
+
+export function handleListItemClick(
+  children: React.ReactNode,
+  threadId: string,
+) {
+  if (children) {
+    const content =
+      typeof children === "string" ? children.trim() : children.toString();
+
+    const addThread = useThreadStore.getState().addThread;
+    addThread(threadId, content);
+
+    const addMessage = useThreadStore.getState().addMessage;
+    addMessage(threadId, {
+      id: `${Date.now()}`, // or a more suitable unique identifier
+      content: `Tell me more about: ${content}`,
+      role: "user", // or "assistant", depending on the context
+    });
+  }
 }
 
 export function ChatMessageBubble(props: {
@@ -59,7 +77,12 @@ export function ChatMessageBubble(props: {
               <ol className="list-decimal pl-5">{children}</ol>
             ),
             li: ({ children }) => (
-              <ClickableListItem onClick={() => {}}>
+              <ClickableListItem
+                onClick={() => {
+                  const threadId = "example-thread-id";
+                  handleListItemClick(children, threadId);
+                }}
+              >
                 {typeof children === "string"
                   ? children.replace(/\n{3,}/g, "\n\n").trim()
                   : children}

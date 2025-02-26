@@ -2,12 +2,15 @@
 
 import { type Message } from "ai";
 import { useChat } from "ai/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { toast } from "sonner";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 
-import { ChatMessageBubble } from "@/components/ChatMessageBubble";
+import {
+  ChatMessageBubble,
+  handleListItemClick,
+} from "@/components/ChatMessageBubble";
 import { IntermediateStep } from "./IntermediateStep";
 import { Button } from "./ui/button";
 import { ArrowDown, LoaderCircle, Paperclip } from "lucide-react";
@@ -22,7 +25,9 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { cn } from "@/utils/cn";
-import { ThreadModal } from "./ThreadModal";
+import useThreadStore from "@/store/useThreadsStore";
+import { ClickableListItem } from "./ui/extended/clickable-list-item";
+import { ChatThread } from "./ChatThread";
 
 export function ChatMessages(props: {
   messages: Message[];
@@ -155,6 +160,12 @@ export function ChatWindow(props: {
   showIngestForm?: boolean;
   showIntermediateStepsToggle?: boolean;
 }) {
+  const modalRef = useRef(null);
+
+  const selectedThread = useThreadStore(
+    (state) => state.threads["example-thread-id"],
+  );
+
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(
     !!props.showIntermediateStepsToggle,
   );
@@ -278,14 +289,26 @@ export function ChatWindow(props: {
         contentClassName="py-8 px-2"
         content={
           chat.messages.length === 0 ? (
-            <div>{props.emptyStateComponent}</div>
+            <div>
+              {props.emptyStateComponent}
+              <ClickableListItem
+                onClick={() => {
+                  const threadId = "example-thread-id";
+                  handleListItemClick("list", threadId);
+                }}
+              >
+                thread check
+              </ClickableListItem>
+            </div>
           ) : (
-            <ChatMessages
-              aiEmoji={props.emoji}
-              messages={chat.messages}
-              emptyStateComponent={props.emptyStateComponent}
-              sourcesForMessages={sourcesForMessages}
-            />
+            <div>
+              <ChatMessages
+                aiEmoji={props.emoji}
+                messages={chat.messages}
+                emptyStateComponent={props.emptyStateComponent}
+                sourcesForMessages={sourcesForMessages}
+              />
+            </div>
           )
         }
         footer={
