@@ -160,9 +160,17 @@ export function ChatWindow(props: {
   showIngestForm?: boolean;
   showIntermediateStepsToggle?: boolean;
 }) {
+  // handling threads ----
   const selectedThread = useThreadStore(
     (state) => state.threads["example-thread-id"],
   );
+
+  const removeThread = useThreadStore((state) => state.removeThread);
+
+  const clearThread = () => {
+    removeThread("example-thread-id");
+  };
+  // ----
 
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(
     !!props.showIntermediateStepsToggle,
@@ -280,6 +288,22 @@ export function ChatWindow(props: {
     ]);
   }
 
+  let threadMessages: Message[] = [];
+  if (selectedThread) {
+    const lastAiMessageIndex = chat.messages.findIndex(
+      (msg) => msg.role === "assistant" && msg.id === selectedThread.id,
+    );
+
+    if (lastAiMessageIndex !== -1 && lastAiMessageIndex > 0) {
+      const userMessage = chat.messages[lastAiMessageIndex - 1];
+      const aiMessage = chat.messages[lastAiMessageIndex];
+
+      if (userMessage.role === "user") {
+        threadMessages = [userMessage, aiMessage];
+      }
+    }
+  }
+
   return (
     <StickToBottom>
       <StickyToBottomContent
@@ -300,16 +324,17 @@ export function ChatWindow(props: {
             </div>
           ) : (
             <div>
-              <ChatThread
-                selectedThread={selectedThread}
-                clearThread={() => {}}
-                props={{
-                  messages: chat.messages,
-                  sourcesForMessages: sourcesForMessages,
-                  aiEmoji: props.emoji,
-                  // className: props.className,
-                }}
-              />
+              {selectedThread && (
+                <ChatThread
+                  selectedThread={selectedThread}
+                  clearThread={clearThread}
+                  props={{
+                    messages: threadMessages,
+                    sourcesForMessages: sourcesForMessages,
+                    aiEmoji: props.emoji,
+                  }}
+                />
+              )}
               <ChatMessages
                 aiEmoji={props.emoji}
                 messages={chat.messages}
